@@ -269,6 +269,10 @@ class Utils:
         
         elif stage == '3':
 
+            if not cls.__get_data():
+
+                return f'\n{STRINGS.empty_trans}\n\n{STRINGS.back}'
+
             data: FunctionType = cls.__get_data
 
             if data:
@@ -330,6 +334,10 @@ class Utils:
                 return f"{STRINGS.empty_trans}\n\n{STRINGS.back}"
             
         elif stage == '4':
+
+            if not cls.__get_data():
+
+                return f'\n{STRINGS.empty_trans}\n\n{STRINGS.back}'
 
             search_menu: str = input(STRINGS.search_menu)
 
