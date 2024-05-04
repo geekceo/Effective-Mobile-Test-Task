@@ -12,7 +12,9 @@ class Utils:
 
     trans_type_dict: dict = {
         '1': 'Доход',
-        '2': 'Расход'
+        '2': 'Расход',
+        'Доход': '1',
+        'Расход': '1'
     }
 
     def __new__(cls): ...
@@ -71,15 +73,96 @@ class Utils:
 
                 f.write(json.dumps(all_data, indent=4, ensure_ascii=False))
 
+    @classmethod
+    def __edit_data(cls, transaction_id: int) -> None:
 
-    def __edit_data(cls, **data) -> None:
+        data: list = cls.__get_data()
 
-        ...
+        transaction: Transaction = Transaction(frozen=True, **data[transaction_id])
+
+        category: str = input(f'{STRINGS.transaction_type} (Enter: {transaction.category}): ')
+
+        if category == '':
+
+            category = transaction.category
+
+        while not cls.trans_type_dict[category]:
+
+            print(STRINGS.category_error)
+
+            category = input(f'{STRINGS.transaction_type} (Enter: {transaction.category}): ')
+
+        amount: str = input(f'{STRINGS.amount} (Enter: {transaction.amount}): ')
+
+        if amount == '':
+
+            amount = transaction.amount
+
+        while not amount.isdigit():
+
+            print(STRINGS.digit_error)
+
+            amount = input(f'{STRINGS.amount} (Enter: {transaction.amount}): ')
+
+        description: str = input(f'{STRINGS.description} (Enter: {transaction.description}): ')
+
+        if description == '':
+
+            description = transaction.description
+
+        data[transaction_id]['category'] = category
+        data[transaction_id]['amount'] = amount
+        data[transaction_id]['description'] = description
+
+        with open('data.json', 'w', encoding='utf-8') as f:
+
+            f.write(json.dumps(data, indent=4, ensure_ascii=False))
+
+
 
     @staticmethod
     def clear() -> None:
 
         os.system('clear' if os.name == 'posix' else 'cls')
+
+    @classmethod
+    def __pagination_mixin(cls) -> dict:
+
+        data: list = cls.__get_data()
+
+        pagination: dict = {k:[] for k in range(1, math.ceil(len(data) / 2) + 1)}
+
+        data.reverse()
+
+        for page in pagination.keys():
+
+            transaction: dict = data.pop()
+
+            index: int = cls.__get_data().index(transaction)
+
+            record: str = f'ID: {index + 1}\n\n' +\
+                f'Дата: {transaction["date"]}\n' +\
+                f'Категория: {transaction["category"]}\n' +\
+                f'Сумма: {transaction["amount"]}\n' +\
+                f'Описание: {transaction["description"]}\n\n'
+            
+            pagination[page].append(record)
+
+            if data:
+
+                transaction: dict = data.pop()
+
+                index: int = cls.__get_data().index(transaction)
+
+                record: str = f'ID: {index + 1}\n\n' +\
+                    f'Дата: {transaction["date"]}\n' +\
+                    f'Категория: {transaction["category"]}\n' +\
+                    f'Сумма: {transaction["amount"]}\n' +\
+                    f'Описание: {transaction["description"]}\n\n'
+                
+                pagination[page].append(record)
+
+        return pagination
 
     @classmethod
     def menu_handler(cls, stage: str):
@@ -139,43 +222,15 @@ class Utils:
 
             if data:
 
-                pagination: dict = {k:[] for k in range(1, math.ceil(len(data) / 2) + 1)}
-
-                data.reverse()
-
-                for page in pagination.keys():
-
-                    transaction: dict = data.pop()
-
-                    index: int = cls.__get_data().index(transaction)
-
-                    record: str = f'ID: {index + 1}\n\n' +\
-                        f'Дата: {transaction["date"]}\n' +\
-                        f'Категория: {transaction["category"]}\n' +\
-                        f'Сумма: {transaction["amount"]}\n' +\
-                        f'Описание: {transaction["description"]}\n\n'
-
-                    pagination[page].append(record)
-
-                    if data:
-
-                        transaction: dict = data.pop()
-
-                        index: int = cls.__get_data().index(transaction)
-
-                        record: str = f'ID: {index + 1}\n\n' +\
-                            f'Дата: {transaction["date"]}\n' +\
-                            f'Категория: {transaction["category"]}\n' +\
-                            f'Сумма: {transaction["amount"]}\n' +\
-                            f'Описание: {transaction["description"]}\n\n'
-
-                        pagination[page].append(record)
+                pagination: dict = cls.__pagination_mixin()
 
                 page: int = 1
 
                 edit_menu: str = ''
 
                 while edit_menu != '0':
+
+                    pagination = cls.__pagination_mixin()
 
                     cls.clear()
 
@@ -186,6 +241,19 @@ class Utils:
                     elif edit_menu == '-' and page > 1:
 
                         page -= 1
+
+                    elif edit_menu.isdigit() and edit_menu != '0':
+
+                        page = int(edit_menu) if int(edit_menu) <= len(pagination) else 1
+
+                    elif 'R' in edit_menu:
+
+                        index: int = int(edit_menu.replace('R', ''))
+
+                        if index <= len(data):
+
+                            cls.__edit_data(transaction_id=index - 1)
+                            pagination = cls.__pagination_mixin()
 
                     else:
 
