@@ -1,0 +1,50 @@
+[
+    {
+        "date": "2024-05-04",
+        "category": "Доход",
+        "amount": "15000",
+        "description": "Мама скинула"
+    },
+    {
+        "date": "2024-05-04",
+        "category": "Расход",
+        "amount": "220",
+        "description": "Шаурма в сырном лаваше"
+    },
+    {
+        "date": "2024-05-04",
+        "category": "Доход",
+        "amount": "4000",
+        "description": "GG"
+    },
+    {
+        "date": "2024-05-04",
+        "category": "Расход",
+        "amount": "2200",
+        "description": "HH"
+    },
+    {
+        "date": "2024-05-04",
+        "category": "Доход",
+        "amount": "500",
+        "description": "Папа скинул"
+    },
+    {
+        "date": "2024-05-04",
+        "category": "Расход",
+        "amount": "1200",
+        "description": "TT"
+    },
+    {
+        "date": "2024-05-04",
+        "category": "Доход",
+        "amount": "1000",
+        "description": "Нашел"
+    },
+    {
+        "date": "2024-05-04",
+        "category": "Расход",
+        "amount": "350",
+        "description": "ВК Музыка"
+    }
+]

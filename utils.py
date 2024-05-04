@@ -305,10 +305,10 @@ class Utils:
 
                         index: int = int(edit_menu.replace('R', ''))
 
-                        if index <= len(data):
+                        if index <= len(data()):
 
                             cls.__edit_data(transaction_id=index - 1)
-                            pagination = cls.__pagination_mixin(data=data)
+                            pagination = cls.__pagination_mixin(data=data())
 
                     else:
 
