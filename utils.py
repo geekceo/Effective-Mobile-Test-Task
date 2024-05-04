@@ -1,10 +1,12 @@
 import os
+import re
 import json
 import math
 from strings import Strings
 from data_models import Transaction
 from datetime import date
 from typing import Any, Union
+from types import FunctionType
 
 STRINGS: Strings = Strings()
 
@@ -126,11 +128,13 @@ class Utils:
         os.system('clear' if os.name == 'posix' else 'cls')
 
     @classmethod
-    def __pagination_mixin(cls) -> dict:
+    def __pagination_mixin(cls, data: list) -> dict:
 
-        data: list = cls.__get_data()
+
 
         pagination: dict = {k:[] for k in range(1, math.ceil(len(data) / 2) + 1)}
+
+        all_data: list = data.copy()
 
         data.reverse()
 
@@ -138,7 +142,7 @@ class Utils:
 
             transaction: dict = data.pop()
 
-            index: int = cls.__get_data().index(transaction)
+            index: int = all_data.index(transaction)
 
             record: str = f'ID: {index + 1}\n\n' +\
                 f'Дата: {transaction["date"]}\n' +\
@@ -152,7 +156,7 @@ class Utils:
 
                 transaction: dict = data.pop()
 
-                index: int = cls.__get_data().index(transaction)
+                index: int = all_data.index(transaction)
 
                 record: str = f'ID: {index + 1}\n\n' +\
                     f'Дата: {transaction["date"]}\n' +\
@@ -163,6 +167,27 @@ class Utils:
                 pagination[page].append(record)
 
         return pagination
+    
+    @classmethod
+    def __get_search_filter(cls, search_request: str) -> str:
+
+        search_filter: str
+
+        pattern = "^\d{4}-\d{2}-\d{2}$"
+
+        if re.match(pattern, search_request):
+
+            search_filter = 'date'
+
+        elif search_request.isdigit():
+
+            search_filter = 'amount'
+
+        else:
+
+            search_filter = 'category'
+        
+        return search_filter
 
     @classmethod
     def menu_handler(cls, stage: str):
@@ -218,11 +243,11 @@ class Utils:
         
         elif stage == '3':
 
-            data: Union[list, bool] = cls.__get_data()
+            data: FunctionType = cls.__get_data
 
             if data:
 
-                pagination: dict = cls.__pagination_mixin()
+                pagination: dict = cls.__pagination_mixin(data=data())
 
                 page: int = 1
 
@@ -230,7 +255,7 @@ class Utils:
 
                 while edit_menu != '0':
 
-                    pagination = cls.__pagination_mixin()
+                    pagination = cls.__pagination_mixin(data=data())
 
                     cls.clear()
 
@@ -253,7 +278,7 @@ class Utils:
                         if index <= len(data):
 
                             cls.__edit_data(transaction_id=index - 1)
-                            pagination = cls.__pagination_mixin()
+                            pagination = cls.__pagination_mixin(data=data)
 
                     else:
 
@@ -269,6 +294,65 @@ class Utils:
 
                     print(' '.join(pages))
                     print(STRINGS.edit_menu)
+                    edit_menu = input('Операция: ')
+
+                cls.clear()
+                return STRINGS.menu
+
+            else:
+                
+                return f"{STRINGS.empty_trans}\n\n{STRINGS.back}"
+            
+        elif stage == '4':
+
+            search_menu: str = input(STRINGS.search_menu)
+
+            search_filter = cls.__get_search_filter(search_request=search_menu)
+
+            data: list = [elem for elem in cls.__get_data() if elem[search_filter] == search_menu]
+
+            if data:
+
+                pagination: dict = cls.__pagination_mixin(data=data)
+
+                page: int = 1
+
+                edit_menu: str = ''
+
+                while edit_menu != '0':
+
+                    data = [elem for elem in cls.__get_data() if elem[search_filter] == search_menu]
+
+                    pagination = cls.__pagination_mixin(data=data)
+
+                    cls.clear()
+
+                    if edit_menu == '+' and page < len(pagination):
+
+                        page += 1
+
+                    elif edit_menu == '-' and page > 1:
+
+                        page -= 1
+
+                    elif edit_menu.isdigit() and edit_menu != '0':
+
+                        page = int(edit_menu) if int(edit_menu) <= len(pagination) else 1
+
+                    else:
+
+                        page = 1
+
+                    pages: list = [str(num) for num in range(1, len(pagination) + 1)]
+
+                    pages = [num for num in ''.join(pages).replace(str(page), f'|{page}|')]
+
+                    for transaction in pagination[page]:
+
+                        print(f'{transaction}\n')
+
+                    print(' '.join(pages))
+                    print(STRINGS.search_menu_pages)
                     edit_menu = input('Операция: ')
 
                 cls.clear()

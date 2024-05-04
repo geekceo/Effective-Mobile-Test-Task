@@ -1,18 +1,18 @@
 [
     {
-        "date": "2024-05-04",
+        "date": "2024-05-03",
         "category": "Доход",
         "amount": "5000",
         "description": "ГГ"
     },
     {
-        "date": "2024-05-04",
+        "date": "2024-05-03",
         "category": "Расход",
         "amount": "1460",
         "description": "ДД"
     },
     {
-        "date": "2024-05-04",
+        "date": "2024-05-03",
         "category": "Доход",
         "amount": "5000",
         "description": "TT"
