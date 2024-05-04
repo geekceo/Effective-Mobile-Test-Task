@@ -1,7 +1,12 @@
 import json
 from typing import Any
 
-class Strings(object):        
+class Strings(object):
+
+    '''
+    Class which may work with dynamic strings from json file
+    Let do 'hot change' strings via json from file
+    '''
 
     def __getattribute__(self, name: str) -> Any:
 

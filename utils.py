@@ -24,6 +24,10 @@ class Utils:
     @classmethod
     def __get_data(cls) -> Union[list, bool]:
 
+        '''
+        This func let reading data from json file and return list or bool value
+        '''
+
         try:
 
             data: list = json.loads(open('data.json', 'r', encoding='utf-8').read())
@@ -35,6 +39,10 @@ class Utils:
     
     @classmethod
     def __calculate_balance(cls) -> tuple:
+
+        '''
+        This func calculate three balances - total balance, income balance and expense balance
+        '''
 
         data: list = cls.__get_data()
 
@@ -59,6 +67,10 @@ class Utils:
     @classmethod
     def __write_data(cls, data: Transaction) -> None:
 
+        '''
+        This func let wirte data to json file via Transaction model of data
+        '''
+
         all_data: Union[list, bool] = cls.__get_data()
 
         if not all_data:
@@ -77,6 +89,10 @@ class Utils:
 
     @classmethod
     def __edit_data(cls, transaction_id: int) -> None:
+
+        '''
+        This func let edit transactions data via transaction id from local 'database'
+        '''
 
         data: list = cls.__get_data()
 
@@ -130,7 +146,9 @@ class Utils:
     @classmethod
     def __pagination_mixin(cls, data: list) -> dict:
 
-
+        '''
+        Mixin to pagination that using in more parts of code
+        '''
 
         pagination: dict = {k:[] for k in range(1, math.ceil(len(data) / 2) + 1)}
 
@@ -171,6 +189,10 @@ class Utils:
     @classmethod
     def __get_search_filter(cls, search_request: str) -> str:
 
+        '''
+        This function let get type of search filter - category, date or amount to autodetect this for smart search
+        '''
+
         search_filter: str
 
         pattern = "^\d{4}-\d{2}-\d{2}$"
@@ -190,7 +212,7 @@ class Utils:
         return search_filter
 
     @classmethod
-    def menu_handler(cls, stage: str):
+    def menu_handler(cls, stage: str, test: bool = False):
 
         cls.clear()
 
@@ -209,6 +231,10 @@ class Utils:
                 return f"{STRINGS.balance.format(balance=balance, income=income, expense=expense)}\n\n{STRINGS.back}"
             
             else:
+
+                if test:
+
+                    return 0, 0, 0
                 
                 return f"{STRINGS.balance.format(balance='0', income='0', expense='0')}\n{STRINGS.empty_trans}\n\n{STRINGS.back}"
 
@@ -361,6 +387,11 @@ class Utils:
             else:
                 
                 return f"{STRINGS.empty_trans}\n\n{STRINGS.back}"
+            
+        else:
+
+            cls.clear()
+            exit()
             
 
             
