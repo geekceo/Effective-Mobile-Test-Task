@@ -46,5 +46,11 @@
         "category": "Расход",
         "amount": "350",
         "description": "ВК Музыка"
+    },
+    {
+        "date": "2024-05-05",
+        "category": "",
+        "amount": "1500",
+        "description": "Продал подушку с принтом"
     }
 ]

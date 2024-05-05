@@ -104,7 +104,7 @@ class Utils:
 
             category = transaction.category
 
-        while not cls.trans_type_dict[category]:
+        while category not in cls.trans_type_dict.keys() and category != '':
 
             print(STRINGS.category_error)
 
@@ -195,7 +195,7 @@ class Utils:
 
         search_filter: str
 
-        pattern = "^\d{4}-\d{2}-\d{2}$"
+        pattern: str = "^\d{4}-\d{2}-\d{2}$"
 
         if re.match(pattern, search_request):
 
@@ -244,7 +244,7 @@ class Utils:
 
             category: str = input(STRINGS.transaction_type)
 
-            while not cls.trans_type_dict[category]:
+            while category not in cls.trans_type_dict.keys():
 
                 print(STRINGS.category_error)
 
